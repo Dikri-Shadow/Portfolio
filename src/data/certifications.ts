@@ -1,1 +1,8 @@
-export const certifications=[{name:'KKNI Level II Teknik Komputer dan Jaringan',issuer:'BNSP',period:'2023–2026'}];
+export const certifications = [
+  {
+    name: "KKNI Level II Teknik Komputer dan Jaringan",
+    issuer: "BNSP",
+    period: "Credential earned · validity ended 2026",
+    status: "Previously certified",
+  },
+];

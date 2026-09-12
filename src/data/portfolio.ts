@@ -1,4 +1,27 @@
-// TODO: USER_DATA_REQUIRED — all unknown personal details live here. Replace nulls only with verified data.
-export const profile={name:'Nama Anda',eyebrow:'Mahasiswa Teknik Informatika',headline:'Membangun produk digital yang berguna, andal, dan mudah digunakan.',summary:'Mahasiswa aktif Teknik Informatika dengan dasar Teknik Komputer dan Jaringan, tertarik pada software development, IT & infrastructure, dan game development.',location:null as string|null,email:null as string|null,phone:null as string|null,campus:null as string|null,photoUrl:null as string|null,cvUrl:null as string|null,availability:'Terbuka untuk kesempatan internship',focus:['Software Development','IT / Infrastructure','Game Development']};
-export const socials={github:null as string|null,linkedin:null as string|null};
-export const site={url:'http://localhost:3000',title:'Portfolio — Mahasiswa Teknik Informatika',description:'Portfolio mahasiswa Teknik Informatika dengan fokus software development, IT infrastructure, dan game development.'};
+// TODO: USER_DATA_REQUIRED — photo, phone, LinkedIn, production domain, and CV remain intentionally empty.
+export const profile = {
+  name: "Dikriana",
+  eyebrow: "Informatics Engineering Student",
+  headline:
+    "Membangun produk digital yang berguna, andal, dan mudah digunakan.",
+  summary:
+    "Mahasiswa Teknik Informatika dengan latar belakang Teknik Komputer dan Jaringan, pengalaman magang sebagai IT Support, serta aktif membangun dan mempelajari software, web, infrastructure, dan game development.",
+  location: "Sukabumi, Indonesia",
+  email: "dikriana3@gmail.com",
+  phone: null as string | null,
+  campus: "Muhammadiyah Kota Sukabumi",
+  photoUrl: null as string | null,
+  cvUrl: null as string | null,
+  availability: "Terbuka untuk kesempatan internship",
+  focus: ["Software Development", "IT Support", "Game Development"],
+};
+export const socials = {
+  github: "https://github.com/Dikri-Shadow",
+  linkedin: null as string | null,
+};
+export const site = {
+  url: "http://localhost:3000",
+  title: "Dikriana — Informatics Engineering Student",
+  description:
+    "Portfolio Dikriana, mahasiswa Teknik Informatika dengan pengalaman IT Support dan fokus pada software, infrastructure, serta game development.",
+};

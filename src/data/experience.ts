@@ -1,1 +1,13 @@
-export const experience=[{role:'IT Support Intern',organization:'Diskominfo Kota Sukabumi',period:'Maret 2022 – Mei 2022',items:['Troubleshooting komputer dan jaringan','Instalasi dan konfigurasi software','Pengecekan perangkat','Membantu kebutuhan teknis pengguna']}];
+export const experience = [
+  {
+    role: "IT Support Intern",
+    organization: "Diskominfo Kota Sukabumi",
+    period: "Maret 2022 – Mei 2022",
+    items: [
+      "Troubleshooting komputer dan jaringan",
+      "Instalasi dan konfigurasi software",
+      "Pengecekan perangkat",
+      "Membantu kebutuhan teknis pengguna",
+    ],
+  },
+];

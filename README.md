@@ -1,6 +1,18 @@
-# Premium Personal Portfolio
+# Dikriana — Personal Developer Portfolio
 
-Standalone portfolio untuk mahasiswa Teknik Informatika. Frontend React/Vite dan API Express berjalan dari satu production origin yang hanya bind ke `127.0.0.1`.
+Production-oriented personal portfolio for Dikriana, an Informatics Engineering student with a Computer and Network Engineering background and verified IT Support internship experience. The interface presents capabilities through evidence rather than arbitrary percentages.
+
+## Highlights
+
+- Evidence-based Capability Explorer with filtering, search, relationship map, and detail panels
+- Project system that keeps demo records out of the public portfolio
+- Ask Dikriana: optional local Ollama integration with a deterministic, grounded fallback
+- Accessible keyboard navigation, command palette, responsive layouts, and reduced-motion support
+- Secure Express API, SQLite contact storage, validation, rate limiting, and production headers
+
+## Stack
+
+React 19, TypeScript strict, Vite, Node.js, Express, SQLite, Zod, Helmet, Vitest, and ESLint.
 
 ## Quick start
 
@@ -21,7 +33,30 @@ Production: `http://127.0.0.1:3000`.
 
 ## Personalize
 
-Cari `TODO: USER_DATA_REQUIRED`. Data utama berada di `src/data/portfolio.ts`, proyek di `src/data/projects.ts`, dan screenshot di `public/projects/`. Jangan hapus label demo sampai konten benar-benar diganti dengan bukti proyek nyata.
+Cari `TODO: USER_DATA_REQUIRED`. CV, LinkedIn, production domain, school name, and real project case studies are intentionally not invented. Screenshots can be added under `public/projects/`.
+
+## Architecture
+
+The browser only calls the portfolio backend. Contact messages are stored locally in SQLite and are never exposed through a read endpoint.
+
+```text
+Browser → Express API → SQLite
+                  └──→ Ollama at 127.0.0.1:11434 (optional)
+```
+
+Ollama is never exposed to the browser or proxied wholesale. The assistant receives only structured public portfolio knowledge, has no tools or filesystem access, and does not store conversations.
+
+## Optional Ollama setup
+
+Install Ollama separately and pull a small model manually. The project never downloads a model automatically. Configure `.env`:
+
+```env
+OLLAMA_BASE_URL=http://127.0.0.1:11434
+OLLAMA_MODEL=
+OLLAMA_TIMEOUT_MS=15000
+```
+
+When `OLLAMA_MODEL` is empty, the backend selects the smallest locally listed model. If Ollama is unavailable, Ask Dikriana continues with verified deterministic answers.
 
 ## Quality checks
 
@@ -33,4 +68,8 @@ npm run build
 npm audit
 ```
 
-Lihat `docs/` untuk keamanan, deployment Windows, dan Cloudflare Tunnel. Tidak ada remote atau deployment yang dikonfigurasi.
+See `docs/` for security, Windows operation, and the future Cloudflare Tunnel plan. No website deployment is included.
+
+## Screenshots
+
+Screenshots will be added after final personal assets and real project case studies are available.

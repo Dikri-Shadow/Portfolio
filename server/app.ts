@@ -5,16 +5,23 @@ import { rateLimit } from "express-rate-limit";
 import path from "node:path";
 import type Database from "better-sqlite3";
 import type { Logger } from "pino";
-import { contactSchema } from "./validation.js";
+import { assistantSchema, contactSchema } from "./validation.js";
 import { storeContact } from "./db/database.js";
+import { AssistantService } from "./assistant/service.js";
 export function createApp({
   db,
   logger,
   isProduction = false,
+  assistant = new AssistantService({
+    baseUrl: "http://127.0.0.1:11434",
+    model: "",
+    timeoutMs: 1500,
+  }),
 }: {
   db: Database.Database;
   logger: Logger;
   isProduction?: boolean;
+  assistant?: AssistantService;
 }) {
   const app = express();
   app.disable("x-powered-by");
@@ -47,19 +54,18 @@ export function createApp({
       service: "portfolio",
       version: "1.0.0",
       time: new Date().toISOString(),
+      assistant: assistant.status(),
     }),
   );
   const limiter = rateSome();
   app.post("/api/contact", limiter, (req, res) => {
     const parsed = contactSchema.safeParse(req.body);
     if (!parsed.success)
-      return res
-        .status(400)
-        .json({
-          ok: false,
-          error: "Please check the submitted fields.",
-          fields: parsed.error.flatten().fieldErrors,
-        });
+      return res.status(400).json({
+        ok: false,
+        error: "Please check the submitted fields.",
+        fields: parsed.error.flatten().fieldErrors,
+      });
     const input = {
       name: parsed.data.name,
       email: parsed.data.email,
@@ -72,14 +78,34 @@ export function createApp({
       return res.status(201).json({ ok: true, id: saved.id });
     } catch (error) {
       logger.error({ err: error }, "Contact storage failed");
-      return res
-        .status(500)
-        .json({
-          ok: false,
-          error: "Message could not be saved. Please try again.",
-        });
+      return res.status(500).json({
+        ok: false,
+        error: "Message could not be saved. Please try again.",
+      });
     }
   });
+  app.post(
+    "/api/assistant",
+    rateLimit({
+      windowMs: 10 * 60 * 1000,
+      limit: 10,
+      standardHeaders: "draft-8",
+      legacyHeaders: false,
+      message: {
+        ok: false,
+        error: "Too many questions. Please try again later.",
+      },
+    }),
+    async (req, res) => {
+      const parsed = assistantSchema.safeParse(req.body);
+      if (!parsed.success)
+        return res
+          .status(400)
+          .json({ ok: false, error: "Please enter a valid question." });
+      const result = await assistant.answer(parsed.data.question);
+      return res.json({ ok: true, ...result });
+    },
+  );
   if (isProduction) {
     const dist = path.resolve("dist");
     app.use(

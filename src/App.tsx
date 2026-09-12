@@ -21,7 +21,9 @@ import { projects } from "./data/projects";
 import { experience } from "./data/experience";
 import { education } from "./data/education";
 import { certifications } from "./data/certifications";
-import { currentlyLearning, skillGroups } from "./data/skills";
+import { capabilities } from "./data/capabilities";
+import { CapabilityExplorer } from "./components/CapabilityExplorer";
+import { PortfolioAssistant } from "./components/PortfolioAssistant";
 import { useActiveSection } from "./hooks/useActiveSection";
 import type { Project } from "./types/content";
 const nav = [
@@ -29,18 +31,17 @@ const nav = [
   ["about", "About"],
   ["projects", "Projects"],
   ["experience", "Experience"],
-  ["skills", "Skills"],
+  ["capabilities", "Capabilities"],
   ["education", "Education"],
   ["contact", "Contact"],
 ] as const;
+const publicProjects = projects.filter((project) => !project.placeholder);
 function scrollToId(id: string) {
-  document
-    .getElementById(id)
-    ?.scrollIntoView({
-      behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
-        ? "auto"
-        : "smooth",
-    });
+  document.getElementById(id)?.scrollIntoView({
+    behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
+      ? "auto"
+      : "smooth",
+  });
   history.replaceState(null, "", `#${id}`);
 }
 function LinkButton({
@@ -311,10 +312,14 @@ function DevTerminal() {
   const run = (raw: string) => {
     const cmd = raw.trim().toLowerCase();
     const responses: Record<string, string> = {
-      help: "Commands: about, projects, skills, experience, education, contact, whoami, status, stack, clear",
+      help: "Commands: about, projects, skills, capabilities, ai, experience, education, contact, whoami, status, stack, clear",
       about: profile.summary,
       projects: `${projects.length} demo entries loaded. See the Projects section.`,
-      skills: skillGroups.flatMap((x) => x.items).join(" · "),
+      skills: capabilities.map((x) => x.name).join(" · "),
+      capabilities: [...new Set(capabilities.map((x) => x.category))].join(
+        " · ",
+      ),
+      ai: "Ask Dikriana assistant is available with a verified offline fallback.",
       experience: "IT Support Intern — Diskominfo Kota Sukabumi (Mar–May 2022)",
       education:
         "Active Informatics Engineering student; vocational background in Computer & Network Engineering.",
@@ -376,6 +381,7 @@ export default function App() {
   const active = useActiveSection(nav.map((x) => x[0]));
   const [menu, setMenu] = useState(false);
   const [palette, setPalette] = useState(false);
+  const [assistantOpen, setAssistantOpen] = useState(false);
   const [selected, setSelected] = useState<Project | null>(null);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
@@ -388,10 +394,10 @@ export default function App() {
     "idle" | "sending" | "success" | "error"
   >("idle");
   const [captcha, setCaptcha] = useState("");
-  const categories = ["All", ...new Set(projects.map((p) => p.category))];
+  const categories = ["All", ...new Set(publicProjects.map((p) => p.category))];
   const visible = useMemo(
     () =>
-      projects.filter(
+      publicProjects.filter(
         (p) =>
           (category === "All" || p.category === category) &&
           `${p.name} ${p.summary} ${p.stack.join(" ")}`
@@ -437,6 +443,7 @@ export default function App() {
       enabled: !!profile.cvUrl,
     },
     { label: "Copy Email", run: copyEmail, enabled: !!profile.email },
+    { label: "Ask Dikriana", run: () => setAssistantOpen(true) },
     {
       label: "Open GitHub",
       run: () => socials.github && open(socials.github, "_blank", "noopener"),
@@ -534,12 +541,13 @@ export default function App() {
               </button>
               <LinkButton
                 href={profile.cvUrl}
-                label="Download CV"
+                label="CV coming soon"
                 icon={<Download size={16} />}
               />
             </div>
             <div className="social-row">
               <LinkButton href={socials.github} label="GitHub" />
+              <LinkButton href={`mailto:${profile.email}`} label="Email" />
               <LinkButton href={socials.linkedin} label="LinkedIn" />
             </div>
           </div>
@@ -630,16 +638,18 @@ export default function App() {
           ) : (
             <div className="empty-state">
               <Search />
-              <h3>No projects found</h3>
-              <p>Try another search or category.</p>
-              <button
-                onClick={() => {
-                  setQuery("");
-                  setCategory("All");
-                }}
-              >
-                Reset filters
-              </button>
+              <h3>Project case studies are being prepared.</h3>
+              <p>No demo entry is presented as Dikriana’s real work.</p>
+              {publicProjects.length > 0 && (
+                <button
+                  onClick={() => {
+                    setQuery("");
+                    setCategory("All");
+                  }}
+                >
+                  Reset filters
+                </button>
+              )}
             </div>
           )}
         </section>
@@ -666,39 +676,7 @@ export default function App() {
             ))}
           </div>
         </section>
-        <section id="skills" className="section">
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">04 / Capabilities</p>
-              <h2>A foundation designed to keep growing.</h2>
-            </div>
-            <p>
-              Skill labels are intentionally conservative until supported by
-              project evidence.
-            </p>
-          </div>
-          <div className="skill-grid">
-            {skillGroups.map((g) => (
-              <article key={g.title}>
-                <h3>{g.title}</h3>
-                {g.items.map((x, i) => (
-                  <div className="skill-row" key={x}>
-                    <span>{String(i + 1).padStart(2, "0")}</span>
-                    <b>{x}</b>
-                  </div>
-                ))}
-              </article>
-            ))}
-          </div>
-          <div className="learning">
-            <p className="eyebrow">Currently learning</p>
-            <div>
-              {currentlyLearning.map((x) => (
-                <span key={x}>{x}</span>
-              ))}
-            </div>
-          </div>
-        </section>
+        <CapabilityExplorer />
         <section id="education" className="section">
           <p className="eyebrow">05 / Education & Certification</p>
           <h2>Formal learning, technical roots.</h2>
@@ -716,7 +694,7 @@ export default function App() {
                 <Check />
                 <small>{x.period}</small>
                 <h3>{x.name}</h3>
-                <p>{x.issuer}</p>
+                <p>{x.issuer} · {x.status}</p>
               </article>
             ))}
           </div>
@@ -837,6 +815,7 @@ export default function App() {
       {selected && (
         <ProjectModal project={selected} onClose={() => setSelected(null)} />
       )}
+      <PortfolioAssistant open={assistantOpen} setOpen={setAssistantOpen} />
     </>
   );
 }
