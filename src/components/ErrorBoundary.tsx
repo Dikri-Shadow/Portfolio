@@ -1,0 +1,2 @@
+import {Component,type ErrorInfo,type ReactNode} from 'react';
+export class ErrorBoundary extends Component<{children:ReactNode},{failed:boolean}>{state={failed:false};static getDerivedStateFromError(){return{failed:true}}componentDidCatch(error:Error,info:ErrorInfo){console.error('UI error',error.message,info.componentStack)}render(){return this.state.failed?<main className="fatal"><p className="eyebrow">Something went wrong</p><h1>Halaman tidak dapat ditampilkan.</h1><button onClick={()=>location.reload()}>Muat ulang</button></main>:this.props.children}}

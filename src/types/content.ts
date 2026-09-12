@@ -1,0 +1,2 @@
+export type ProjectStatus='LIVE'|'PRODUCTION'|'IN DEVELOPMENT'|'ARCHIVED'|'EXPERIMENT';
+export interface Project{id:string;slug:string;name:string;category:string;status:ProjectStatus;year:number;summary:string;description:string;role:string;stack:string[];challenges:string[];solutions:string[];highlights:string[];screenshots:{src:string;alt:string}[];liveUrl:string|null;repositoryUrl:string|null;featured:boolean;placeholder:boolean}

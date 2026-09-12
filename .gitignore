@@ -1,0 +1,12 @@
+node_modules/
+dist/
+server-dist/
+data/*.db*
+logs/*.log*
+.env
+*.local
+*.tsbuildinfo
+coverage/
+.DS_Store
+Thumbs.db
+!.gitkeep

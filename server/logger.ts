@@ -1,0 +1,2 @@
+import pino from'pino';import fs from'node:fs';import path from'node:path';
+export function createLogger(isProduction:boolean){if(!isProduction)return pino({level:'info',transport:{target:'pino-pretty',options:{colorize:true}}});const dir=path.resolve('logs');fs.mkdirSync(dir,{recursive:true});return pino({level:'info',redact:['req.headers.authorization','req.headers.cookie','body','email','message']},pino.destination({dest:path.join(dir,'app.log'),sync:false}))}

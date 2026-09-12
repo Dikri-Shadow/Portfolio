@@ -1,0 +1,1 @@
+import{z}from'zod';export const contactSchema=z.object({name:z.string().trim().min(2).max(80),email:z.string().trim().toLowerCase().email().max(254),subject:z.string().trim().max(120).optional().or(z.literal('')),message:z.string().trim().min(10).max(3000),website:z.string().max(0).optional(),answer:z.literal('7')});
