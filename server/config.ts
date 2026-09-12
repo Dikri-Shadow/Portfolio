@@ -20,7 +20,7 @@ const schema = z.object({
     )
     .default("http://127.0.0.1:11434"),
   OLLAMA_MODEL: z.string().trim().max(120).default(""),
-  OLLAMA_TIMEOUT_MS: z.coerce.number().int().min(1000).max(30000).default(15000),
+  OLLAMA_TIMEOUT_MS: z.coerce.number().int().min(1000).max(30000).default(20000),
 });
 export type AppConfig = z.infer<typeof schema>;
 export function loadConfig(

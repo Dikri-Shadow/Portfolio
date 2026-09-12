@@ -10,7 +10,7 @@ const unsafe =
 export function isUnsafeAssistantQuery(question: string) {
   return unsafe.test(question);
 }
-export function fallbackAnswer(question: string): AssistantAnswer {
+export function deterministicAnswer(question: string): AssistantAnswer | null {
   const q = question.toLowerCase();
   const id =
     /\b(apa|siapa|kemampuan|bisa|pengalaman|belajar|tersedia|magang|dukungan|teknologi)\b/.test(
@@ -81,6 +81,29 @@ export function fallbackAnswer(question: string): AssistantAnswer {
       source: "fallback",
       relatedSection: "education",
     };
+  if (/certif|sertif|bnsp|kkni/.test(q))
+    return {
+      answer: id
+        ? "Dikriana memiliki KKNI Level II Teknik Komputer dan Jaringan dari BNSP, terbit pada 2023 dan berlaku sampai 2026. Statusnya di portfolio adalah Previously certified."
+        : "Dikriana earned the BNSP KKNI Level II Computer and Network Engineering certification in 2023. It was valid through 2026 and is listed as Previously certified.",
+      source: "fallback",
+      relatedSection: "education",
+    };
+  if (/project|proyek|repository|repo/.test(q))
+    return {
+      answer: id
+        ? "Source portfolio ini menjadi evidence untuk React, TypeScript, Vite, Node.js, Express, SQLite, dan Zod. Case study project lain masih disiapkan dan tidak diklaim sebagai project nyata."
+        : "This portfolio source is evidence for React, TypeScript, Vite, Node.js, Express, SQLite, and Zod. Other project case studies are still being prepared and are not presented as completed work.",
+      source: "fallback",
+      relatedSection: "projects",
+    };
+  return null;
+}
+export function fallbackAnswer(question: string): AssistantAnswer {
+  const deterministic = deterministicAnswer(question);
+  if (deterministic) return deterministic;
+  const q = question.toLowerCase();
+  const id = /\b(apa|siapa|kemampuan|bisa|pengalaman|belajar|tersedia|magang|dukungan|teknologi)\b/.test(q);
   return {
     answer: id
       ? "Informasi tersebut belum tersedia di portfolio Dikriana. Anda dapat bertanya tentang experience, capabilities, education, teknologi portfolio, atau availability internship."

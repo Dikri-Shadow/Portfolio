@@ -120,7 +120,7 @@ function ProjectCard({
           <h3>{project.name}</h3>
           <p>{project.summary}</p>
           <div className="chips">
-            {project.stack.map((x) => (
+            {(project.stack ?? []).map((x) => (
               <span key={x}>{x}</span>
             ))}
           </div>
@@ -180,47 +180,58 @@ function ProjectModal({
             {project.category} · {project.status}
           </p>
           <h2 id="project-title">{project.name}</h2>
-          <p className="lead">{project.description}</p>
+          {project.description && <p className="lead">{project.description}</p>}
+          {project.role && <><h3>Role</h3><p>{project.role}</p></>}
+          {project.architecture && <><h3>Architecture</h3><p>{project.architecture}</p></>}
           {project.placeholder && (
             <div className="notice">
               Demo placeholder — ganti dengan bukti proyek nyata sebelum
               dipublikasikan.
             </div>
           )}
-          <div className="case-grid">
-            <div>
-              <h3>Challenge</h3>
+          {(project.challenges?.length || project.solutions?.length) && (
+            <div className="case-grid">
+            {project.challenges?.length ? <div>
+              <h3>Challenges</h3>
               {project.challenges.map((x) => (
                 <p key={x}>{x}</p>
               ))}
-            </div>
-            <div>
-              <h3>Approach</h3>
+            </div> : null}
+            {project.solutions?.length ? <div>
+              <h3>Solution</h3>
               {project.solutions.map((x) => (
                 <p key={x}>{x}</p>
               ))}
+            </div> : null}
             </div>
-          </div>
-          <h3>Highlights</h3>
-          <ul>
+          )}
+          {project.highlights?.length ? <><h3>Key Features</h3><ul>
             {project.highlights.map((x) => (
               <li key={x}>{x}</li>
             ))}
-          </ul>
-          <div className="chips">
+          </ul></> : null}
+          {project.learnings?.length ? <><h3>What I Learned</h3><ul>
+            {project.learnings.map((x) => <li key={x}>{x}</li>)}
+          </ul></> : null}
+          {(project.gallery ?? project.screenshots)?.length ? <><h3>Gallery</h3><div className="project-gallery">
+            {(project.gallery ?? project.screenshots ?? []).map((image) => (
+              <img key={image.src} src={image.src} alt={image.alt} loading="lazy" />
+            ))}
+          </div></> : null}
+          {project.stack?.length ? <div className="chips">
             {project.stack.map((x) => (
               <span key={x}>{x}</span>
             ))}
-          </div>
+          </div> : null}
           <div className="actions">
             <LinkButton
-              href={project.liveUrl}
+              href={project.liveUrl ?? null}
               label="Live project"
               icon={<ExternalLink size={16} />}
             />
             <LinkButton
-              href={project.repositoryUrl}
-              label="Repository"
+              href={project.repositoryVisibility === "public" ? project.repositoryUrl ?? null : null}
+              label={project.repositoryVisibility === "private" ? "Private Repository" : "Repository"}
               icon={<FolderGit2 size={16} />}
             />
           </div>
@@ -400,7 +411,7 @@ export default function App() {
       publicProjects.filter(
         (p) =>
           (category === "All" || p.category === category) &&
-          `${p.name} ${p.summary} ${p.stack.join(" ")}`
+          `${p.name} ${p.summary} ${(p.stack ?? []).join(" ")}`
             .toLowerCase()
             .includes(query.toLowerCase()),
       ),

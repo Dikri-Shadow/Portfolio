@@ -28,7 +28,7 @@ export const portfolioKnowledge = {
     "SMK — Teknik Komputer dan Jaringan",
   ],
   certifications: [
-    "KKNI Level II Teknik Komputer dan Jaringan — BNSP — credential earned; validity ended in 2026",
+    "KKNI Level II Teknik Komputer dan Jaringan — BNSP — issued in 2023; validity ended in 2026; status: Previously certified",
   ],
   capabilities: {
     development: ["React", "TypeScript", "Vite"],
@@ -67,3 +67,22 @@ export const allowedSections = [
   "contact",
 ] as const;
 export type RelatedSection = (typeof allowedSections)[number];
+
+export function selectPortfolioKnowledge(question: string) {
+  const q = question.toLowerCase();
+  if (/skill|stack|technolog|teknologi|capabilit|kemampuan|bisa/.test(q))
+    return { profile: portfolioKnowledge.profile, capabilities: portfolioKnowledge.capabilities };
+  if (/experience|pengalaman|intern|magang|diskominfo/.test(q))
+    return { profile: portfolioKnowledge.profile, experience: portfolioKnowledge.experience };
+  if (/education|pendidikan|kampus|university|school|sekolah/.test(q))
+    return { profile: portfolioKnowledge.profile, education: portfolioKnowledge.education };
+  if (/certif|sertif|bnsp|kkni/.test(q))
+    return { profile: portfolioKnowledge.profile, certifications: portfolioKnowledge.certifications };
+  if (/project|proyek|repository|repo/.test(q))
+    return { profile: portfolioKnowledge.profile, projects: portfolioKnowledge.projects };
+  if (/contact|kontak|email|github|available|tersedia/.test(q))
+    return { profile: portfolioKnowledge.profile };
+  if (/learn|belajar/.test(q))
+    return { profile: portfolioKnowledge.profile, currentlyLearning: portfolioKnowledge.currentlyLearning };
+  return { profile: portfolioKnowledge.profile };
+}

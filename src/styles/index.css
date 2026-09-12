@@ -810,6 +810,16 @@ footer {
 .modal .project-visual {
   height: 280px;
 }
+.project-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+.project-gallery img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
 .icon-button {
   display: grid;
   place-items: center;
