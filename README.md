@@ -8,7 +8,7 @@ Production-oriented personal portfolio for Dikriana, an Informatics Engineering 
 
 The site presents a credible professional profile, evidence-based capabilities, education, certification, and verified experience. Public project case studies are intentionally empty until real project data is supplied; demo records remain internal placeholders and are never shown as completed work.
 
-GitHub and email are active. LinkedIn, CV, profile photo, and real project case studies retain clear unavailable states rather than fabricated content. The frontend is published with GitHub Pages at `https://dikri.thedev.id`.
+GitHub and email are active. LinkedIn, CV, profile photo, and real project case studies retain clear unavailable states rather than fabricated content. The frontend is published with GitHub Pages at `https://dikri-shadow.github.io/Portfolio/` and configured to use `https://dikri.thedev.id` after its DNS registration is approved.
 
 ## Highlights
 
