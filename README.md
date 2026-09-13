@@ -102,7 +102,25 @@ The test suite covers API validation, contact handling, assistant grounding and 
 
 ## Deployment notes
 
-Deployment is intentionally out of scope for the current phase. The repository does not contain Cloudflare credentials, private machine paths, contact messages, or production secrets. Future Windows and Cloudflare Tunnel guidance is documented under `docs/` but has not been executed.
+The repository does not contain Cloudflare credentials, contact messages, or production secrets. The current internet preview uses an anonymous Cloudflare Quick Tunnel without a domain, DNS record, inbound port forwarding, or direct exposure of the Node and Ollama ports.
+
+## Windows laptop server
+
+The production server and Quick Tunnel can start automatically after Windows sign-in through two separate Scheduled Tasks:
+
+- `DikrianaPortfolio` runs `scripts/start-portfolio.ps1`
+- `DikrianaPortfolioTunnel` runs `scripts/start-tunnel.ps1`
+
+Both scripts prevent duplicate portfolio-specific processes. The tunnel waits for `/api/health`, records logs under the ignored `logs/` directory, and stores its current temporary URL in the ignored `runtime/public-url.txt` file.
+
+Check local health and the latest tunnel URL:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\check-health.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\show-public-url.ps1
+```
+
+Quick Tunnel URLs are temporary and normally change whenever `cloudflared` restarts. The laptop must remain powered on, signed in, awake, and connected to the internet. A stable hostname requires a separate future domain and Named Tunnel phase.
 
 ## Remaining portfolio content
 
