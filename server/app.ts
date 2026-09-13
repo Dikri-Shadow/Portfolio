@@ -48,13 +48,13 @@ export function createApp({
   );
   app.use(compression());
   app.use(express.json({ limit: "16kb" }));
-  app.get("/api/health", (_req, res) =>
+  app.get("/api/health", async (_req, res) =>
     res.json({
       ok: true,
       service: "portfolio",
       version: "1.0.0",
       time: new Date().toISOString(),
-      assistant: assistant.status(),
+      assistant: await assistant.healthStatus(),
     }),
   );
   const limiter = rateSome();

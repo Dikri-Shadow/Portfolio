@@ -10,6 +10,12 @@ const unsafe =
 export function isUnsafeAssistantQuery(question: string) {
   return unsafe.test(question);
 }
+export function isDeterministicFaq(question: string) {
+  const q = question.trim().toLowerCase().replace(/[?.!]$/, "");
+  return /^(what can dikriana do|apa kemampuan dikriana|what technologies are used in this portfolio|teknologi apa yang digunakan|what is dikriana (currently )?learning|apa yang sedang dipelajari dikriana|is dikriana available for internship|apakah dikriana tersedia untuk magang)$/.test(
+    q,
+  );
+}
 export function deterministicAnswer(question: string): AssistantAnswer | null {
   const q = question.toLowerCase();
   const id =
@@ -41,7 +47,7 @@ export function deterministicAnswer(question: string): AssistantAnswer | null {
       relatedSection: "capabilities",
       relatedCapability: "express",
     };
-  if (/skill|capabilit|kemampuan|strongest|bisa/.test(q))
+  if (/skill|capabilit|kemampuan|strongest|bisa|what can/.test(q))
     return {
       answer: id
         ? "Evidence terkuat Dikriana saat ini adalah pengalaman praktis IT Support dan project experience membangun portfolio full-stack ini dengan React, TypeScript, Node.js, Express, SQLite, dan Zod."

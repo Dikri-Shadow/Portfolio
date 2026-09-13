@@ -40,6 +40,9 @@ if (-not (Test-Path -LiteralPath $serverEntry)) {
 $nodePath = (Get-Command node -ErrorAction Stop).Source
 Set-Location -LiteralPath $projectRoot
 Set-Item -Path Env:NODE_ENV -Value "production"
+Set-Item -Path Env:OLLAMA_BASE_URL -Value "http://127.0.0.1:11434"
+Set-Item -Path Env:OLLAMA_MODEL -Value "qwen3:1.7b"
+Set-Item -Path Env:OLLAMA_TIMEOUT_MS -Value "20000"
 
 Write-StartupLog "Starting portfolio on 127.0.0.1:3000."
 & $nodePath $serverEntry 1>> $stdoutLog 2>> $stderrLog

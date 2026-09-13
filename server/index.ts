@@ -17,6 +17,12 @@ const app = createApp({
   isProduction: config.NODE_ENV === "production",
   assistant,
 });
+void assistant.warmUp().then((warmed) =>
+  logger.info(
+    { assistant: assistant.status(), warmed },
+    "Portfolio assistant warm-up finished",
+  ),
+);
 const server = app.listen(config.PORT, "127.0.0.1", () =>
   logger.info(
     { host: "127.0.0.1", port: config.PORT },
