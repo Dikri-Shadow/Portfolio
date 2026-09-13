@@ -8,7 +8,7 @@ Production-oriented personal portfolio for Dikriana, an Informatics Engineering 
 
 The site presents a credible professional profile, evidence-based capabilities, education, certification, and verified experience. Public project case studies are intentionally empty until real project data is supplied; demo records remain internal placeholders and are never shown as completed work.
 
-GitHub and email are active. LinkedIn, CV, profile photo, production domain, and real project case studies retain clear unavailable states rather than fabricated content. The website remains local and has not been deployed.
+GitHub and email are active. LinkedIn, CV, profile photo, and real project case studies retain clear unavailable states rather than fabricated content. The frontend is published with GitHub Pages at `https://dikri.thedev.id`.
 
 ## Highlights
 
@@ -102,7 +102,11 @@ The test suite covers API validation, contact handling, assistant grounding and 
 
 ## Deployment notes
 
-The repository does not contain Cloudflare credentials, contact messages, or production secrets. The current internet preview uses an anonymous Cloudflare Quick Tunnel without a domain, DNS record, inbound port forwarding, or direct exposure of the Node and Ollama ports.
+The GitHub Pages deployment is a static frontend build. Relative Vite asset URLs allow the same artifact to work at the temporary `/Portfolio/` project URL and at the custom domain without changing local development.
+
+GitHub Pages does not run Express, SQLite, or Ollama. In the static build, Ask Dikriana uses grounded deterministic portfolio data in the browser, server status is labeled as static, and contact submissions direct visitors to email. Local and self-hosted production builds retain the Express health API, SQLite contact storage, and local Ollama integration unchanged.
+
+The repository does not contain Cloudflare credentials, contact messages, database files, environment files, or production secrets.
 
 ## Windows laptop server
 

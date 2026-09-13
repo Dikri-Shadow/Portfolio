@@ -36,6 +36,7 @@ const nav = [
   ["contact", "Contact"],
 ] as const;
 const publicProjects = projects.filter((project) => !project.placeholder);
+const isStaticDeployment = import.meta.env.VITE_STATIC_DEPLOYMENT === "true";
 function scrollToId(id: string) {
   document.getElementById(id)?.scrollIntoView({
     behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -397,12 +398,12 @@ export default function App() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
   const [progress, setProgress] = useState(0);
-  const [health, setHealth] = useState<"checking" | "online" | "offline">(
-    "checking",
+  const [health, setHealth] = useState<"checking" | "online" | "offline" | "static">(
+    isStaticDeployment ? "static" : "checking",
   );
   const [copied, setCopied] = useState(false);
   const [formState, setFormState] = useState<
-    "idle" | "sending" | "success" | "error"
+    "idle" | "sending" | "success" | "error" | "static"
   >("idle");
   const [captcha, setCaptcha] = useState("");
   const categories = ["All", ...new Set(publicProjects.map((p) => p.category))];
@@ -425,9 +426,11 @@ export default function App() {
       );
     addEventListener("scroll", update, { passive: true });
     update();
-    fetch("/api/health")
-      .then((r) => (r.ok ? setHealth("online") : setHealth("offline")))
-      .catch(() => setHealth("offline"));
+    if (!isStaticDeployment) {
+      fetch("/api/health")
+        .then((r) => (r.ok ? setHealth("online") : setHealth("offline")))
+        .catch(() => setHealth("offline"));
+    }
     const key = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
@@ -469,6 +472,10 @@ export default function App() {
   ];
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (isStaticDeployment) {
+      setFormState("static");
+      return;
+    }
     setFormState("sending");
     const form = new FormData(e.currentTarget);
     const body = Object.fromEntries(form);
@@ -583,7 +590,7 @@ export default function App() {
               </div>
               <div className={`server-status ${health}`}>
                 <Server size={16} />
-                <span>Portfolio server</span>
+                <span>{health === "static" ? "Static portfolio" : "Portfolio server"}</span>
                 <b>{health.toUpperCase()}</b>
               </div>
             </div>
@@ -807,6 +814,11 @@ export default function App() {
               <p className="form-message error" role="alert">
                 Message could not be sent. Please check the fields and try
                 again.
+              </p>
+            )}
+            {formState === "static" && (
+              <p className="form-message" role="status">
+                Message storage needs the private backend. Please email {profile.email} directly.
               </p>
             )}
           </form>

@@ -356,6 +356,9 @@ small {
 .server-status.offline b {
   color: var(--warm);
 }
+.server-status.static b {
+  color: #79b8ff;
+}
 .split {
   display: grid;
   grid-template-columns: 0.9fr 1.1fr;

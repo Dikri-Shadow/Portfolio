@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Bot, RotateCcw, Send, Sparkles, X } from "lucide-react";
+import { staticAssistantAnswer } from "../lib/staticAssistant";
 type Message = {
   role: "user" | "assistant";
   text: string;
@@ -15,6 +16,7 @@ const prompts = [
   "Is Dikriana available for internship?",
   "Show backend capabilities.",
 ];
+const isStaticDeployment = import.meta.env.VITE_STATIC_DEPLOYMENT === "true";
 export function PortfolioAssistant({
   open,
   setOpen,
@@ -49,6 +51,11 @@ export function PortfolioAssistant({
     setInput("");
     setBusy(true);
     setError(false);
+    if (isStaticDeployment) {
+      setMessages((v) => [...v, { role: "assistant", ...staticAssistantAnswer(clean) }]);
+      setBusy(false);
+      return;
+    }
     try {
       const response = await fetch("/api/assistant", {
         method: "POST",
